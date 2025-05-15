@@ -13,5 +13,7 @@ namespace MoneyMap.Models.Entities
 
         [Required]
         public bool IsInput { get; set; }
+
+        public List<Transactions> Transaction { get; set; }
     }
 }

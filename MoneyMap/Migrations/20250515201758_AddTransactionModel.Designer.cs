@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyMap.Models;
 
@@ -11,9 +12,11 @@ using MoneyMap.Models;
 namespace MoneyMap.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515201758_AddTransactionModel")]
+    partial class AddTransactionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,6 +59,9 @@ namespace MoneyMap.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
+                    b.Property<Guid>("CategoriesIdCategory")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -64,20 +70,18 @@ namespace MoneyMap.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileAttached")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.HasKey("IdTransaction");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoriesIdCategory");
 
                     b.ToTable("Transactions");
                 });
@@ -116,13 +120,13 @@ namespace MoneyMap.Migrations
 
             modelBuilder.Entity("MoneyMap.Models.Entities.Transactions", b =>
                 {
-                    b.HasOne("MoneyMap.Models.Entities.Categories", "Category")
+                    b.HasOne("MoneyMap.Models.Entities.Categories", "Categories")
                         .WithMany("Transaction")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("CategoriesIdCategory")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("MoneyMap.Models.Entities.Categories", b =>
