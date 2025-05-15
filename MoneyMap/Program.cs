@@ -1,13 +1,17 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MoneyMap.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var ConStr = builder.Configuration.GetConnectionString("default");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 // Add services to the container.
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(ConStr));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
