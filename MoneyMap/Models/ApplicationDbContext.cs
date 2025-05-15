@@ -10,6 +10,7 @@ namespace MoneyMap.Models
 
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
+        public virtual DbSet<Transactions> Transactions { get; set; }
 
     }
 }
