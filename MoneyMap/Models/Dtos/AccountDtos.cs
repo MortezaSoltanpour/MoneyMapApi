@@ -32,4 +32,10 @@
         public DateTime DateRegistered { get; set; }
         public bool IsDeleted { get; set; }
     }
+
+    public class UserChangePasswordDto
+    {
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
 }
