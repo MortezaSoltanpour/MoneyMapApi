@@ -88,6 +88,7 @@ namespace MoneyMap.Controllers
                 IdUser = Guid.NewGuid(),
                 Fullname = user.Fullname,
                 Password = PasswordHelper.EncodePasswordMd5(user.Password),
+                DateRegistered = DateTime.Now
             });
             await _context.SaveChangesAsync();
 
