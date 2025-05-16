@@ -53,5 +53,22 @@ namespace MoneyMap.Controllers
             };
             return ReturnResponse(result, HttpStatusCode.OK, null);
         }
+
+        [HttpGet("AllUsers")]
+        public async Task<IActionResult> AllUsers()
+        {
+            List<UserDto> users = await _context
+                .Users
+                .Select(p => new UserDto()
+                {
+                    DateRegistered = p.DateRegistered,
+                    Email = p.Email,
+                    Fullname = p.Fullname,
+                    IsDeleted = p.IsDeleted,
+                })
+                .ToListAsync();
+
+            return ReturnResponse(users, HttpStatusCode.OK, null);
+        }
     }
 }
