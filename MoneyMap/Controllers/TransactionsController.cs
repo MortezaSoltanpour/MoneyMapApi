@@ -40,8 +40,6 @@ namespace MoneyMap.Controllers
             return ReturnResponse(transactions, HttpStatusCode.OK, null);
         }
 
-
-
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] TransactionPostDto transaction)
         {
@@ -52,7 +50,7 @@ namespace MoneyMap.Controllers
                 CategoryId = transaction.IdCategory,
                 DateRegistered = transaction.DateCreated,
                 Amount = transaction.Amount,
-                
+
             });
             await _context.SaveChangesAsync();
 
@@ -97,6 +95,29 @@ namespace MoneyMap.Controllers
             await _context.SaveChangesAsync();
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
+
+        [HttpGet("Get")]
+        public async Task<IActionResult> Get([FromQuery] Guid id)
+        {
+            TransactionDto transaction = await _context
+                .Transactions
+                .Select(p => new TransactionDto()
+                {
+                    IdTransaction = p.IdTransaction,
+                    DateRegistered = p.DateRegistered,
+                    Description = p.Description,
+                    Amount = p.Amount,
+                    Category = p.Category.Title,
+                    IdCategory = p.CategoryId,
+                    FileAttached = p.FileAttached
+                })
+                .FirstOrDefaultAsync(p => p.IdTransaction == id);
+
+            if (transaction == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            return ReturnResponse(transaction, HttpStatusCode.OK, null);
         }
     }
 }
