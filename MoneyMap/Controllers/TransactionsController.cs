@@ -57,13 +57,12 @@ namespace MoneyMap.Controllers
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
 
-
         [HttpPost("Edit")]
         public async Task<IActionResult> Edit([FromBody] TransactionPostDto transaction)
         {
             Transactions thisTransaction = await _context
                 .Transactions
-                .FirstOrDefaultAsync(p => p.IdTransaction == transaction.IdCategory);
+                .FirstOrDefaultAsync(p => p.IdTransaction == transaction.IdTransaction);
 
             if (thisTransaction == null)
                 return ReturnResponse(null, HttpStatusCode.NotFound, null);
