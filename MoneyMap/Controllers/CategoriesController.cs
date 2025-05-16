@@ -18,7 +18,7 @@ namespace MoneyMap.Controllers
 
 
         [HttpGet("All")]
-        public async Task<IActionResult> AllUsers([FromQuery] bool isInput = true)
+        public async Task<IActionResult> All([FromQuery] bool isInput = true)
         {
             List<CategoriesDto> categories = await _context
                 .Categories
@@ -49,7 +49,6 @@ namespace MoneyMap.Controllers
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
-
 
 
         [HttpPost("Edit")]
