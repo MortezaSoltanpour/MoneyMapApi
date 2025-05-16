@@ -17,8 +17,14 @@ namespace MoneyMap.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> All([FromQuery] DateTime dtStart, [FromQuery] DateTime dtEnd, [FromQuery] Guid? idCategory)
+        public async Task<IActionResult> All([FromQuery] DateTime? dtStart, [FromQuery] DateTime? dtEnd, [FromQuery] Guid? idCategory)
         {
+            if (dtStart == null)
+                dtStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+            if (dtEnd == null)
+                dtEnd = dtStart.Value.AddMonths(1).AddDays(-1);
+
             List<TransactionDto> transactions = await _context
                 .Transactions
                 .Where(p => p.DateRegistered >= dtStart && p.DateRegistered < dtEnd)
