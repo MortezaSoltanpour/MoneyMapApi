@@ -70,5 +70,22 @@ namespace MoneyMap.Controllers
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
 
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete([FromBody] Guid id)
+        {
+            Categories thisCategory = await _context
+                .Categories
+                .FirstOrDefaultAsync(p => p.IdCategory == id);
+
+            if (thisCategory == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            thisCategory.IsDeleted = true;
+            _context.Update(thisCategory);
+
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
     }
 }
