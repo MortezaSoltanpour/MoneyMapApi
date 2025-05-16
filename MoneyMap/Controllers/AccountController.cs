@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyMap.Models;
 using MoneyMap.Models.Dtos;
 using MoneyMap.Models.Entities;
-using MoneyMap.Utility;
+using MoneyMap.Utility.Helper;
 using System.Net;
 
 namespace MoneyMap.Controllers
@@ -12,10 +13,13 @@ namespace MoneyMap.Controllers
     [ApiController]
     public class AccountController : BaseController
     {
-        public AccountController(ApplicationDbContext context) : base(context)
+        IConfiguration _config;
+        public AccountController(ApplicationDbContext context, IConfiguration config) : base(context)
         {
+            _config = config;
         }
 
+        [AllowAnonymous]
         [HttpPost("LoginRequest")]
         public async Task<IActionResult> LoginRequest([FromBody] LoginDto login)
         {
@@ -26,19 +30,45 @@ namespace MoneyMap.Controllers
                 .SingleOrDefaultAsync(p =>
                p.Email == login.Email &&
                p.Password == PasswordHelper.EncodePasswordMd5(login.Password)
-               );
+               )
+                ;
 
             if (user == null)
             {
                 return ReturnResponse(null, HttpStatusCode.Forbidden, new List<string>() { "username and/or password is incorrect" });
             }
 
-            // todo : Generate JWT Token
+            UserDto userInfo = new UserDto()
+            {
+                Email = user.Email,
+                Fullname = user.Email,
+                DateRegistered = user.DateRegistered,
+                IsDeleted = user.IsDeleted,
+
+            };
+            string token = SecurityHelper.GenerateJSONWebToken(userInfo, _config);
             LoginResponse result = new LoginResponse()
             {
-                JWT = "Sample Token"
+                JWT = token
             };
             return ReturnResponse(result, HttpStatusCode.OK, null);
+        }
+
+        [HttpGet("AllUsers")]
+        public async Task<IActionResult> AllUsers()
+        {
+            List<UserDto> users = await _context
+                .Users
+                .Select(p => new UserDto()
+                {
+                    DateRegistered = p.DateRegistered,
+                    Email = p.Email,
+                    Fullname = p.Fullname,
+                    IsDeleted = p.IsDeleted,
+                })
+                .ToListAsync();
+
+            return ReturnResponse(users, HttpStatusCode.OK, null);
         }
     }
 }
