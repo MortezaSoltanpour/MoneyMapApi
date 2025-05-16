@@ -74,7 +74,6 @@ namespace MoneyMap.Controllers
             return ReturnResponse(users, HttpStatusCode.OK, null);
         }
 
-
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] NewUserInputDto user)
         {
@@ -111,7 +110,6 @@ namespace MoneyMap.Controllers
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
-
 
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordDto user)
