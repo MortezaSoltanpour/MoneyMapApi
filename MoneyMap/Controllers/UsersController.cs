@@ -11,17 +11,17 @@ namespace MoneyMap.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AccountController : BaseController
+    public class UsersController : BaseController
     {
         IConfiguration _config;
-        public AccountController(ApplicationDbContext context, IConfiguration config) : base(context)
+        public UsersController(ApplicationDbContext context, IConfiguration config) : base(context)
         {
             _config = config;
         }
 
         [AllowAnonymous]
         [HttpPost("LoginRequest")]
-        public async Task<IActionResult> LoginRequest([FromBody] LoginDto login)
+        public async Task<IActionResult> LoginRequest([FromBody] UserInputDto login)
         {
             login.Email = login.Email.ToLower();
 
@@ -69,6 +69,27 @@ namespace MoneyMap.Controllers
                 .ToListAsync();
 
             return ReturnResponse(users, HttpStatusCode.OK, null);
+        }
+
+
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add([FromBody] NewUserInputDto user)
+        {
+            user.Email = user.Email.ToLower();
+
+            if (_context.Users.Any(p => p.Email == user.Email))
+                return ReturnResponse(null, HttpStatusCode.Conflict, new List<string>() { "Email is already exist" });
+
+            _context.Add(new Users()
+            {
+                Email = user.Email,
+                IdUser = Guid.NewGuid(),
+                Fullname = user.Fullname,
+                Password = PasswordHelper.EncodePasswordMd5(user.Password),
+            });
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
         }
     }
 }

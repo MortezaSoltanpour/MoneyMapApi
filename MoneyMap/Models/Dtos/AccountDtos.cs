@@ -1,9 +1,16 @@
 ﻿namespace MoneyMap.Models.Dtos
 {
-    public class LoginDto
+    public class UserInputDto
     {
         public required string Email { get; set; }
         public required string Password { get; set; }
+    }
+
+    public class NewUserInputDto
+    {
+        public required string Email { get; set; }
+        public required string Password { get; set; }
+        public required string Fullname { get; set; }
     }
 
     public class LoginResponse
