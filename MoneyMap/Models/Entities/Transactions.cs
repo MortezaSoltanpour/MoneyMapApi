@@ -14,7 +14,7 @@ namespace MoneyMap.Models.Entities
         public double Amount { get; set; }
 
         [MaxLength(50)]
-        public string FileAttached { get; set; }
+        public string? FileAttached { get; set; }
         public Guid CategoryId { get; set; }
 
         public Categories Category { get; set; }
