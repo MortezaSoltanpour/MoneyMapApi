@@ -18,10 +18,11 @@ namespace MoneyMap.Controllers
 
 
         [HttpGet("All")]
-        public async Task<IActionResult> AllUsers()
+        public async Task<IActionResult> AllUsers([FromQuery] bool isInput = true)
         {
             List<CategoriesDto> categories = await _context
                 .Categories
+                .Where(p => p.IsInput == isInput)
                 .Select(p => new CategoriesDto()
                 {
                     IdCategory = p.IdCategory,
