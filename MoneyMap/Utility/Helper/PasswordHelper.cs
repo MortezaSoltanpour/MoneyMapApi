@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace MoneyMap.Utility
+namespace MoneyMap.Utility.Helper
 {
     public static class PasswordHelper
     {
@@ -10,8 +10,8 @@ namespace MoneyMap.Utility
             MD5 md5;
             //Instantiate MD5CryptoServiceProvider, get bytes for original password and compute hash (encoded password)   
             md5 = new MD5CryptoServiceProvider();
-            Byte[] originalBytes = ASCIIEncoding.Default.GetBytes(pass);
-            Byte[] encodedBytes = md5.ComputeHash(originalBytes);
+            byte[] originalBytes = Encoding.Default.GetBytes(pass);
+            byte[] encodedBytes = md5.ComputeHash(originalBytes);
             //Convert encoded bytes back to a 'readable' string   
             return BitConverter.ToString(encodedBytes);
         }
