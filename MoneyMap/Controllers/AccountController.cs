@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyMap.Models;
 using MoneyMap.Models.Dtos;
@@ -16,6 +17,7 @@ namespace MoneyMap.Controllers
         {
         }
 
+        [AllowAnonymous]
         [HttpPost("LoginRequest")]
         public async Task<IActionResult> LoginRequest([FromBody] LoginDto login)
         {
@@ -27,7 +29,7 @@ namespace MoneyMap.Controllers
                p.Email == login.Email &&
                p.Password == PasswordHelper.EncodePasswordMd5(login.Password)
                );
-
+             
             if (user == null)
             {
                 return ReturnResponse(null, HttpStatusCode.Forbidden, new List<string>() { "username and/or password is incorrect" });
