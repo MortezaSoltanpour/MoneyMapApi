@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyMap.Models;
 using MoneyMap.Models.Dtos;
+using MoneyMap.Models.Entities;
+using MoneyMap.Utility.Helper;
 using System.Net;
 
 namespace MoneyMap.Controllers
@@ -31,5 +33,22 @@ namespace MoneyMap.Controllers
 
             return ReturnResponse(categories, HttpStatusCode.OK, null);
         }
+
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add([FromBody] CategoryPost user)
+        {
+            _context.Add(new Categories()
+            {
+                IdCategory = Guid.NewGuid(),
+                Title = user.Title,
+                IsInput = user.IsInput,
+            });
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
+
+
+
     }
 }
