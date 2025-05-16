@@ -4,6 +4,7 @@ using MoneyMap.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MoneyMap.Utility.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,7 +69,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                };
            });
 
+builder.Services.AddHttpContextAccessor();
+
+
 var app = builder.Build();
+
+SecurityHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
 // Configure the HTTP request pipeline.
 //if (!app.Environment.IsDevelopment())

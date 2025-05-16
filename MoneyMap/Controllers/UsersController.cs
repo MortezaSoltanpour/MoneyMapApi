@@ -40,12 +40,14 @@ namespace MoneyMap.Controllers
 
             UserDto userInfo = new UserDto()
             {
+                IdUser = user.IdUser,
                 Email = user.Email,
                 Fullname = user.Email,
                 DateRegistered = user.DateRegistered,
                 IsDeleted = user.IsDeleted,
 
             };
+
             string token = SecurityHelper.GenerateJSONWebToken(userInfo, _config);
             LoginResponse result = new LoginResponse()
             {
@@ -61,6 +63,7 @@ namespace MoneyMap.Controllers
                 .Users
                 .Select(p => new UserDto()
                 {
+                    IdUser = p.IdUser,
                     DateRegistered = p.DateRegistered,
                     Email = p.Email,
                     Fullname = p.Fullname,
@@ -87,6 +90,19 @@ namespace MoneyMap.Controllers
                 Fullname = user.Fullname,
                 Password = PasswordHelper.EncodePasswordMd5(user.Password),
             });
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
+
+        [HttpPost("Edit")]
+        public async Task<IActionResult> Edit([FromBody] EditUserInputDto user)
+        {
+            var idUser = SecurityHelper.GetCurrentUserId();
+            Users thisUser = await _context.Users.FirstAsync(p => p.IdUser == idUser);
+            thisUser.Fullname = user.Fullname;
+            thisUser.Email = user.Email;
+            _context.Update(thisUser);
             await _context.SaveChangesAsync();
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
