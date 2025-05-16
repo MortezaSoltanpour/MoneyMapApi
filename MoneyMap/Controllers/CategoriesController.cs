@@ -35,13 +35,14 @@ namespace MoneyMap.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody] CategoryPost user)
+        public async Task<IActionResult> Add([FromBody] CategoryPost category)
         {
             _context.Add(new Categories()
             {
                 IdCategory = Guid.NewGuid(),
-                Title = user.Title,
-                IsInput = user.IsInput,
+                Title = category.Title,
+                IsInput = category.IsInput,
+                DateRegistered = DateTime.Now
             });
             await _context.SaveChangesAsync();
 
@@ -49,6 +50,25 @@ namespace MoneyMap.Controllers
         }
 
 
+
+        [HttpPost("Edit")]
+        public async Task<IActionResult> Edit([FromBody] CategoryPost category)
+        {
+            Categories thisCategory = await _context
+                .Categories
+                .FirstOrDefaultAsync(p => p.IdCategory == category.IdCategory);
+
+            if (thisCategory == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            thisCategory.Title = category.Title;
+            thisCategory.IsInput = category.IsInput;
+            _context.Update(thisCategory);
+
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
 
     }
 }
