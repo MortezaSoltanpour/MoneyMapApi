@@ -76,6 +76,25 @@ var app = builder.Build();
 
 SecurityHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+        throw;
+    }
+}
+
+
 // Configure the HTTP request pipeline.
 //if (!app.Environment.IsDevelopment())
 {
