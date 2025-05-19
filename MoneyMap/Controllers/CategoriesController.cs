@@ -18,11 +18,10 @@ namespace MoneyMap.Controllers
 
 
         [HttpGet("All")]
-        public async Task<IActionResult> All([FromQuery] bool isInput = true)
+        public async Task<IActionResult> All([FromQuery] bool? isInput)
         {
             List<CategoriesDto> categories = await _context
                 .Categories
-                .Where(p => p.IsInput == isInput)
                 .Select(p => new CategoriesDto()
                 {
                     IdCategory = p.IdCategory,
@@ -31,6 +30,10 @@ namespace MoneyMap.Controllers
                     IsInput = p.IsInput
                 })
                 .ToListAsync();
+            if (isInput != null)
+                categories = categories
+                .Where(p => p.IsInput == isInput)
+                .ToList();
 
             return ReturnResponse(categories, HttpStatusCode.OK, null);
         }
