@@ -8,6 +8,18 @@ using MoneyMap.Utility.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS service
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // specify your Angular origin
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 var ConStr = builder.Configuration.GetConnectionString("default");
 
 // Add services to the container.
@@ -104,6 +116,7 @@ using (var scope = app.Services.CreateScope())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "MoneyMap API V1");
     });
 }
+app.UseCors("AllowAll");  
 
 app.UseHttpsRedirection();
 
