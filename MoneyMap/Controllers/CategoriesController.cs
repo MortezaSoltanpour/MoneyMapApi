@@ -53,7 +53,6 @@ namespace MoneyMap.Controllers
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
 
-
         [HttpPost("Edit")]
         public async Task<IActionResult> Edit([FromBody] CategoryPost category)
         {
@@ -89,6 +88,26 @@ namespace MoneyMap.Controllers
             await _context.SaveChangesAsync();
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
+
+        [HttpGet("Get")]
+        public async Task<IActionResult> Get([FromQuery] Guid id)
+        {
+            CategoriesDto categories = await _context
+                .Categories
+                .Select(p => new CategoriesDto()
+                {
+                    DateRegistered = p.DateRegistered,
+                    IdCategory = p.IdCategory,
+                    Title = p.Title,
+                    IsInput = p.IsInput
+                })
+                .FirstOrDefaultAsync(p => p.IdCategory == id);
+
+            if (categories == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            return ReturnResponse(categories, HttpStatusCode.OK, null);
         }
     }
 }
