@@ -116,6 +116,7 @@ using (var scope = app.Services.CreateScope())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "MoneyMap API V1");
     });
 }
+app.UseDeveloperExceptionPage();
 app.UseCors("AllowAll");  
 
 app.UseHttpsRedirection();
