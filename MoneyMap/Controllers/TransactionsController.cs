@@ -84,8 +84,8 @@ namespace MoneyMap.Controllers
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
 
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete([FromBody] Guid id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete( Guid id)
         {
             Transactions thisTransaction = await _context
                 .Transactions
