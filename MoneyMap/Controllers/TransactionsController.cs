@@ -37,8 +37,9 @@ namespace MoneyMap.Controllers
                     Category = p.Category.Title,
                     IdCategory = p.CategoryId,
                     FileAttached = p.FileAttached,
-                    IsInput=p.Category.IsInput
+                    IsInput = p.Category.IsInput
                 })
+                .OrderBy(p => p.DateRegistered)
                 .ToListAsync();
 
             if (idCategory != null)
@@ -86,7 +87,7 @@ namespace MoneyMap.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete( Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             Transactions thisTransaction = await _context
                 .Transactions
