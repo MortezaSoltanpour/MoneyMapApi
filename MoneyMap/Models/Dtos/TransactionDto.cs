@@ -9,6 +9,7 @@
         public string FileAttached { get; set; }
         public Guid IdCategory { get; set; }
         public string Category { get; set; }
+        public bool IsInput { get; set; }
     }
 
     public class TransactionPostDto
@@ -18,6 +19,6 @@
         public double Amount { get; set; }
         public string? FileAttached { get; set; }
         public Guid IdCategory { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime DateRegistered { get; set; }
     }
 }

@@ -36,7 +36,8 @@ namespace MoneyMap.Controllers
                     Amount = p.Amount,
                     Category = p.Category.Title,
                     IdCategory = p.CategoryId,
-                    FileAttached = p.FileAttached
+                    FileAttached = p.FileAttached,
+                    IsInput=p.Category.IsInput
                 })
                 .ToListAsync();
 
@@ -54,7 +55,7 @@ namespace MoneyMap.Controllers
                 IdTransaction = Guid.NewGuid(),
                 Description = transaction.Description,
                 CategoryId = transaction.IdCategory,
-                DateRegistered = transaction.DateCreated,
+                DateRegistered = transaction.DateRegistered,
                 Amount = transaction.Amount,
 
             });
@@ -76,7 +77,7 @@ namespace MoneyMap.Controllers
             thisTransaction.Description = transaction.Description;
             thisTransaction.Amount = transaction.Amount;
             thisTransaction.CategoryId = transaction.IdCategory;
-            thisTransaction.DateRegistered = transaction.DateCreated;
+            thisTransaction.DateRegistered = transaction.DateRegistered;
             _context.Update(thisTransaction);
 
             await _context.SaveChangesAsync();
@@ -115,7 +116,8 @@ namespace MoneyMap.Controllers
                     Amount = p.Amount,
                     Category = p.Category.Title,
                     IdCategory = p.CategoryId,
-                    FileAttached = p.FileAttached
+                    FileAttached = p.FileAttached,
+                    IsInput = p.Category.IsInput
                 })
                 .FirstOrDefaultAsync(p => p.IdTransaction == id);
 
