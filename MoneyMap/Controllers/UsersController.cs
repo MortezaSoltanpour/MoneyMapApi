@@ -148,5 +148,24 @@ namespace MoneyMap.Controllers
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Users thisUser = await _context
+                .Users
+                .FirstOrDefaultAsync(p => p.IdUser == id);
+
+            if (thisUser == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            thisUser.IsDeleted = true;
+            _context.Update(thisUser);
+
+            await _context.SaveChangesAsync();
+
+            return ReturnResponse(null, HttpStatusCode.OK, null);
+        }
+
     }
 }
