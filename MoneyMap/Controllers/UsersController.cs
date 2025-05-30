@@ -120,10 +120,9 @@ namespace MoneyMap.Controllers
         [HttpPost("Edit")]
         public async Task<IActionResult> Edit([FromBody] EditUserInputDto user)
         {
-            var idUser = SecurityHelper.GetCurrentUserId();
-            Users thisUser = await _context.Users.FirstAsync(p => p.IdUser == idUser);
+            Users thisUser = await _context.Users.FirstAsync(p => p.IdUser == user.IdUser);
             user.Email = user.Email.ToLower();
-            if (_context.Users.Any(p => p.Email == user.Email && p.IdUser != idUser))
+            if (_context.Users.Any(p => p.Email == user.Email && p.IdUser != user.IdUser))
                 return ReturnResponse(null, HttpStatusCode.Conflict, new List<string>() { "Email is already exist" });
 
             thisUser.Fullname = user.Fullname;
