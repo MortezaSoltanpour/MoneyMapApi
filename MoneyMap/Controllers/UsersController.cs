@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using MoneyMap.Models;
 using MoneyMap.Models.Dtos;
 using MoneyMap.Models.Entities;
@@ -54,6 +55,27 @@ namespace MoneyMap.Controllers
                 JWT = token
             };
             return ReturnResponse(result, HttpStatusCode.OK, null);
+        }
+
+        [HttpGet("Get")]
+        public async Task<IActionResult> Get([FromQuery] Guid id)
+        {
+            UserDto user = await _context
+                .Users
+                .Select(p => new UserDto()
+                {
+                    IdUser = p.IdUser,
+                    DateRegistered = p.DateRegistered,
+                    Email = p.Email,
+                    Fullname = p.Fullname,
+                    IsDeleted = p.IsDeleted,
+                })
+                .FirstOrDefaultAsync(p => p.IdUser == id);
+
+            if (user == null)
+                return ReturnResponse(null, HttpStatusCode.NotFound, null);
+
+            return ReturnResponse(user, HttpStatusCode.OK, null);
         }
 
         [HttpGet("All")]
