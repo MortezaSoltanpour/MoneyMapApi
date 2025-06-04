@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // specify your Angular origin
+        policy.WithOrigins("http://localhost:4200", "https://moneymap.msoltanpour.ca")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -117,7 +117,7 @@ using (var scope = app.Services.CreateScope())
     });
 }
 app.UseDeveloperExceptionPage();
-app.UseCors("AllowAll");  
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
