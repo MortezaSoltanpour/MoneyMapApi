@@ -17,7 +17,7 @@ namespace MoneyMap.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> All([FromQuery] DateTime? dtStart, [FromQuery] DateTime? dtEnd, [FromQuery] Guid? idCategory)
+        public async Task<IActionResult> All([FromQuery] DateTime? dtStart, [FromQuery] DateTime? dtEnd, [FromQuery] Guid[]? idCategory)
         {
             if (dtStart == null)
                 dtStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -42,8 +42,8 @@ namespace MoneyMap.Controllers
                 .OrderBy(p => p.DateRegistered)
                 .ToListAsync();
 
-            if (idCategory != null)
-                transactions = transactions.Where(p => p.IdCategory == idCategory).ToList();
+            if (idCategory != null && idCategory.Length > 0)
+                transactions = transactions.Where(p => idCategory.Any(c => c == p.IdCategory)).ToList();
 
             return ReturnResponse(transactions, HttpStatusCode.OK, null);
         }
