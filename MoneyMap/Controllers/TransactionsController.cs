@@ -51,6 +51,16 @@ namespace MoneyMap.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] TransactionPostDto transaction)
         {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(transaction.File.FileName);
+
+            if (transaction.File != null && transaction.File.Length > 0)
+            {
+                var filePath = Path.Combine("wwwroot/Uploads", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await transaction.File.CopyToAsync(stream);
+                }
+            }
             _context.Add(new Transactions()
             {
                 IdTransaction = Guid.NewGuid(),
@@ -58,8 +68,10 @@ namespace MoneyMap.Controllers
                 CategoryId = transaction.IdCategory,
                 DateRegistered = transaction.DateRegistered,
                 Amount = transaction.Amount,
-
+                FileAttached = fileName
             });
+
+
             await _context.SaveChangesAsync();
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
