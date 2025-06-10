@@ -78,7 +78,7 @@ namespace MoneyMap.Controllers
         }
 
         [HttpPost("Edit")]
-        public async Task<IActionResult> Edit([FromBody] TransactionPostDto transaction)
+        public async Task<IActionResult> Edit([FromForm] TransactionPostDto transaction)
         {
             Transactions thisTransaction = await _context
                 .Transactions
@@ -87,14 +87,27 @@ namespace MoneyMap.Controllers
             if (thisTransaction == null)
                 return ReturnResponse(null, HttpStatusCode.NotFound, null);
 
+            string fileName = "";
+            if (transaction.File != null && transaction.File.Length > 0)
+            {
+                fileName = Guid.NewGuid().ToString() + Path.GetExtension(transaction.File.FileName);
+                var filePath = Path.Combine("wwwroot/Uploads", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await transaction.File.CopyToAsync(stream);
+                }
+            }
+
             thisTransaction.Description = transaction.Description;
             thisTransaction.Amount = transaction.Amount;
             thisTransaction.CategoryId = transaction.IdCategory;
             thisTransaction.DateRegistered = transaction.DateRegistered;
+            thisTransaction.FileAttached = string.IsNullOrEmpty(fileName) ?
+                thisTransaction.FileAttached : 
+                fileName;
+
             _context.Update(thisTransaction);
-
             await _context.SaveChangesAsync();
-
             return ReturnResponse(null, HttpStatusCode.OK, null);
         }
 
