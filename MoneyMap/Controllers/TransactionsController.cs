@@ -129,7 +129,7 @@ namespace MoneyMap.Controllers
                     Amount = p.Amount,
                     Category = p.Category.Title,
                     IdCategory = p.CategoryId,
-                    FileAttached = p.FileAttached,
+                    FileAttached = $"{Request.Scheme}://{Request.Host}/uploads/{p.FileAttached}",
                     IsInput = p.Category.IsInput
                 })
                 .FirstOrDefaultAsync(p => p.IdTransaction == id);
