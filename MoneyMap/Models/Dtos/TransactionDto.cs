@@ -20,7 +20,7 @@
         public string? FileAttached { get; set; }
         public Guid IdCategory { get; set; }
         public DateTime DateRegistered { get; set; }
-        public IFormFile File { get; set; }  
+        public IFormFile? File { get; set; }  
 
     }
 }
