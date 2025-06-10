@@ -39,7 +39,7 @@ namespace MoneyMap.Controllers
                     FileAttached = p.FileAttached,
                     IsInput = p.Category.IsInput
                 })
-                .OrderBy(p => p.DateRegistered)
+                .OrderByDescending(p => p.DateRegistered)
                 .ToListAsync();
 
             if (idCategory != null && idCategory.Length > 0)
