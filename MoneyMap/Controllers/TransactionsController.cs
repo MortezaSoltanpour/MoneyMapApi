@@ -17,7 +17,7 @@ namespace MoneyMap.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> All([FromQuery] DateTime? dtStart, [FromQuery] DateTime? dtEnd, [FromQuery] Guid? idCategory)
+        public async Task<IActionResult> All([FromQuery] DateTime? dtStart, [FromQuery] DateTime? dtEnd, [FromQuery] Guid[]? idCategory)
         {
             if (dtStart == null)
                 dtStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -42,8 +42,8 @@ namespace MoneyMap.Controllers
                 .OrderBy(p => p.DateRegistered)
                 .ToListAsync();
 
-            if (idCategory != null)
-                transactions = transactions.Where(p => p.IdCategory == idCategory).ToList();
+            if (idCategory != null && idCategory.Length > 0)
+                transactions = transactions.Where(p => idCategory.Any(c => c == p.IdCategory)).ToList();
 
             return ReturnResponse(transactions, HttpStatusCode.OK, null);
         }
@@ -51,6 +51,16 @@ namespace MoneyMap.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] TransactionPostDto transaction)
         {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(transaction.File.FileName);
+
+            if (transaction.File != null && transaction.File.Length > 0)
+            {
+                var filePath = Path.Combine("wwwroot/Uploads", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await transaction.File.CopyToAsync(stream);
+                }
+            }
             _context.Add(new Transactions()
             {
                 IdTransaction = Guid.NewGuid(),
@@ -58,8 +68,10 @@ namespace MoneyMap.Controllers
                 CategoryId = transaction.IdCategory,
                 DateRegistered = transaction.DateRegistered,
                 Amount = transaction.Amount,
-
+                FileAttached = fileName
             });
+
+
             await _context.SaveChangesAsync();
 
             return ReturnResponse(null, HttpStatusCode.OK, null);
