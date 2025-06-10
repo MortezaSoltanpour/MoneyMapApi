@@ -49,12 +49,12 @@ namespace MoneyMap.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody] TransactionPostDto transaction)
+        public async Task<IActionResult> Add([FromForm] TransactionPostDto transaction)
         {
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(transaction.File.FileName);
-
+            string fileName = "";
             if (transaction.File != null && transaction.File.Length > 0)
             {
+                fileName = Guid.NewGuid().ToString() + Path.GetExtension(transaction.File.FileName);
                 var filePath = Path.Combine("wwwroot/Uploads", fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
